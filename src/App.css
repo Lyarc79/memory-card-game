@@ -42,3 +42,52 @@
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 60vh;
+}
+
+.pokeball {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid black;
+  background: linear-gradient(
+    to bottom,
+    #ff0000 45%,
+    #000000 45%,
+    #000000 55%,
+    #ffffff 55%
+  );
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+.pokeball::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  background-color: white;
+  border: 3px solid black;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 10;
+}
