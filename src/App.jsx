@@ -20,15 +20,21 @@ function App() {
   const [pokemonIds, setPokemonIds] = useState(idPicker());
   const [isLoading, setIsLoading] = useState(false);
   const isFirstLoad = useRef(true);
+  const [gameStatus, setGameStatus] = useState(null);
+
+  const handleRestart = () => {
+    setPokemonIds(idPicker());
+    setCurrentScore(0);
+    setClickedCards([]);
+    setGameStatus(null);
+  };
 
   const handleCardClick = (cardId) => {
     if (clickedCards.includes(cardId)) {
       if (currentScore > bestScore) {
         setBestScore(currentScore);
       }
-      setPokemonIds(idPicker());
-      setCurrentScore(0);
-      setClickedCards([]);
+      setGameStatus("lost");
       setIsLoading(true);
       setCards([]);
     } else {
@@ -36,11 +42,16 @@ function App() {
       setCurrentScore(newScore);
       if (newScore > bestScore) {
         setBestScore(newScore);
+        if (newScore === 12) {
+          setGameStatus("won");
+        }
       }
       setClickedCards((prevCards) => [...prevCards, cardId]);
     }
-    let shuffledCards = [...cards].sort(() => Math.random() - 0.5);
-    setCards(shuffledCards);
+    if (!gameStatus) {
+      let shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+      setCards(shuffledCards);
+    }
   };
 
   useEffect(() => {
@@ -91,6 +102,17 @@ function App() {
         cards={cards}
         isLoading={isLoading}
       ></CardContainer>
+      {gameStatus && (
+        <div className="game-overlay">
+          <div className={`message-box ${gameStatus}`}>
+            <h2>{gameStatus === "won" ? "VICTORY!" : "GAME OVER"}</h2>
+            <p>Score: {currentScore}</p>
+            <button className="restart-btn" onClick={handleRestart}>
+              PLAY AGAIN
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
